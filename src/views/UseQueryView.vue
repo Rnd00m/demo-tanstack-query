@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-bold mb-6">Liste des Articles <Button @click="refetch">Refetch</Button></h1>
 
     <Tag severity="info" v-if="isPending">Chargement initial...</Tag>
-    <Tag severity="info" v-if="isFetching">En cour de fetch...</Tag>
+    <Tag severity="info" v-if="isFetching">En cours de fetch...</Tag>
     <Tag severity="danger" v-else-if="isError">Erreur : {{ error.message }}</Tag>
     <div v-else>
       <DataTable :value="data">

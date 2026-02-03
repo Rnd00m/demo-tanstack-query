@@ -10,16 +10,15 @@
           <InputText id="title" v-model="newTitle" placeholder="Entrez le nouveau titre" />
         </div>
 
+        <div class="flex items-center gap-2">
+          <ToggleSwitch v-model="shouldFail" inputId="shouldFail" />
+          <label for="shouldFail">Simuler une erreur serveur</label>
+        </div>
+
         <div class="flex gap-2 items-center">
           <Button 
             label="Mettre à jour"
             @click="mutate(newTitle)" 
-            :loading="isPending"
-          />
-          <Button
-            label="Mettre à jour (error)"
-            severity="danger"
-            @click="mutate(newTitle, true)"
             :loading="isPending"
           />
         </div>
@@ -60,9 +59,11 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Skeleton from "primevue/skeleton";
 import Message from "primevue/message";
+import ToggleSwitch from "primevue/toggleswitch";
 
 const queryClient = useQueryClient();
 const newTitle = ref("");
+const shouldFail = ref(false);
 
 const { data: post, isPending: isQueryPending, isError: isQueryError } = useQuery({
   queryKey: ["posts", 1],
@@ -70,11 +71,11 @@ const { data: post, isPending: isQueryPending, isError: isQueryError } = useQuer
 });
 
 const { mutate, isPending, isError, error } = useMutation({
-  mutationFn: (title, isError = false) => {
+  mutationFn: (title) => {
     // On simule un délai pour bien voir l'effet optimiste
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            if (isError) {
+            if (shouldFail.value) {
               reject(new Error('Erreur simulée pour le test'));
               return;
             }
